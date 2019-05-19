@@ -1,0 +1,41 @@
+[
+  {
+    "SimulationMode": false,
+    "RuleSetsWithWarnings": [],
+    "RuleSetsWithFailures": [],
+    "RuleSetFailMessages": {},
+    "RecordData": {
+      "RuleTreeId": "VATCalculationExample",
+      "NewSalesTransSeq": "123456789",
+      "NewSaleItemType": "Widget",
+      "NewSaleEAN": "9781234567890",
+      "CountryOfSale": "UK"
+    },
+    "InvocationTime": "2019-05-16T15:19:29.2530078+00:00",
+    "ExecutionGasCost": 1137614,
+    "LastRuleSetExecuted": null,
+    "OverallRuleTreeResult": 0
+  },
+  {
+    "SimulationMode": false,
+    "RuleSetsWithWarnings": [],
+    "RuleSetsWithFailures": [
+      "CheckingInputValues_Leaf4"
+    ],
+    "RuleSetFailMessages": {
+      "CheckingInputValues_Leaf4": "ERROR!  Required inputs for VAT calculation exceed maximum allowed value."
+    },
+    "RecordData": {
+      "NewSaleEAN": "9781234567890",
+      "CountryOfSale": "UK",
+      "NewSalesTransSeq": "123456789",
+      "RuleTreeId": "VATPrecheckExample",
+      "NewSalePrice": "2000000",
+      "NewSaleItemType": "Widget"
+    },
+    "InvocationTime": "2019-05-16T15:23:13.6152491+00:00",
+    "ExecutionGasCost": 725439,
+    "LastRuleSetExecuted": null,
+    "OverallRuleTreeResult": 0
+  }
+]

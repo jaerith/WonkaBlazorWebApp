@@ -1,0 +1,16 @@
+[
+  {
+    "SimulationMode": false,
+    "RuleSetsWithWarnings": [],
+    "RuleSetsWithFailures": [],
+    "RuleSetFailMessages": {},
+    "RecordData": {
+      "RuleTreeId": "TestTree",
+      "TestKey": "TestValue"
+    },
+    "InvocationTime": "2019-05-19T02:35:24.1458284+00:00",
+    "ExecutionGasCost": 1111111,
+    "LastRuleSetExecuted": null,
+    "OverallRuleTreeResult": 0
+  }
+]
