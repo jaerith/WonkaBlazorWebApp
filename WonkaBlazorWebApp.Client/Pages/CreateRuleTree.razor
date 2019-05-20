@@ -1,0 +1,87 @@
+﻿@page "/createruletree"
+@inject HttpClient Http
+@inject HttpClient httpClient
+
+<h1>Rule Tree Reports</h1>
+
+<p>This component demonstrates fetching reports from the server.</p>
+
+@if (reports == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>RuleTree ID</th>
+                <th>Execution Result</th>
+                <th>Gas Cost</th>
+                <th>DateTime Executed</th>
+                <th>Failed RS (ID)</th>
+                <th>Failed RS (Reason)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var report in reports)
+            {
+                <tr>
+                    <td>@report.RecordData["RuleTreeId"]</td>
+                    <td>@report.OverallRuleTreeResult</td>
+                    <td>@report.ExecutionGasCost</td>
+                    <td>@report.InvocationTime</td>
+                    <td>@report.RuleSetFailMessages.First().Key</td>
+                    <td>@report.RuleSetFailMessages.First().Value</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@functions {
+    RuleTreeReport[] reports;
+
+    protected override async Task OnInitAsync()
+    {
+        /*
+        reports = new RuleTreeReport[1];
+        reports[0] = new RuleTreeReport() { OverallRuleTreeResult = 1, ExecutionGasCost = 666, InvocationTime = "TODAY" };
+        reports[0].RecordData = new SubmittedRecordData() { RuleTreeId = "999" };
+        */
+
+        // reports = await Http.GetJsonAsync<RuleTreeReport[]>("sample-data/reports.json");
+        // reports = await Http.GetJsonAsync<RuleTreeReport[]>("sample-data/reports2.json");
+        reports = await Http.GetJsonAsync<RuleTreeReport[]>("api/Reports?RuleTreeId=TEST");
+
+        foreach (RuleTreeReport TmpReport in reports)
+        {
+            if ((TmpReport.RuleSetFailMessages == null) || (TmpReport.RuleSetFailMessages.Count == 0))
+            {
+                TmpReport.OverallRuleTreeResult = 1;
+                TmpReport.RuleSetFailMessages[""] = "";
+            }
+        }
+    }
+
+    class RuleTreeReport
+    {
+        public bool SimulationMode { get; set; }
+
+        // public List<string> RuleSetsWithWarnings { get; set; }
+
+        // public List<string> RuleSetsWithFailures { get; set; }
+
+        public Dictionary<string, string> RuleSetFailMessages { get; set; }
+
+        public Dictionary<string, string> RecordData { get; set; }
+
+        public string InvocationTime { get; set; }
+
+        public int ExecutionGasCost { get; set; }
+
+        public string LastRuleSetExecuted { get; set; }
+
+        public int OverallRuleTreeResult { get; set; }
+    }
+}
