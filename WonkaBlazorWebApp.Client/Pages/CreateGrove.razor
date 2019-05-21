@@ -13,7 +13,7 @@
             <p>Grove ID</p>
         </div>
         <div class="col-sm-4">
-            <input placeholder="Enter ID for Grove" bind="@gid" />
+            <input placeholder="NewSaleGroup" bind="@gid" />
         </div>
     </div>
     <br />
@@ -22,7 +22,7 @@
             <p>Grove Description</p>
         </div>
         <div class="col-sm-4">
-            <input placeholder="Enter Description for Grove" bind="@gdesc" />
+            <input placeholder="A group for new sales!" bind="@gdesc" />
         </div>
     </div>
     <br />
@@ -50,7 +50,8 @@
 
     protected override async Task OnInitAsync()
     {
-        // reports = await Http.GetJsonAsync<RuleTreeReport[]>("sample-data/reports.json");
+        gid   = "NewSaleGroup";
+        gdesc = "A group for new sales!";
     }
 
     private async void Submit()
@@ -63,7 +64,9 @@
 
         newGrove.SerializeToBlockchain = true;
 
-        // Http.PostAsJsonAsync("api/grove", newGrove);
+        await Http.SendJsonAsync<WonkaBlazorWebApp.Shared.WBWAGrove>(System.Net.Http.HttpMethod.Post, "api/grove", newGrove);
+
+        finalresult = "Done!";
     }
 
 }
