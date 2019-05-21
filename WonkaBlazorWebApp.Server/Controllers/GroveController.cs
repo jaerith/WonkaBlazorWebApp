@@ -33,11 +33,12 @@ namespace WonkaBlazorWebApp.Server.Controllers
 
         // POST: api/Grove
         [HttpPost]
-        public HttpResponseMessage Post(WonkaBlazorWebApp.Shared.WBWAGrove poGrove)
+        public string Post(WonkaBlazorWebApp.Shared.WBWAGrove poGrove)
         {
             string sBaseUrl = "http:/yourwebsite.here.net";
 
-            HttpResponseMessage responseMessage = new HttpResponseMessage() { StatusCode = HttpStatusCode.BadRequest };
+            string sResponseJsonMsg = "";
+            // HttpResponseMessage responseMessage = new HttpResponseMessage() { StatusCode = HttpStatusCode.BadRequest };
 
             if (poGrove != null)
             {
@@ -50,15 +51,17 @@ namespace WonkaBlazorWebApp.Server.Controllers
                         {
                             request.Content = stringContent;
 
-                            responseMessage = client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).Result;
+                            var responseMessage = client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).Result;
+                            // responseMessage.EnsureSuccessStatusCode();
 
-                            responseMessage.EnsureSuccessStatusCode();
+                            sResponseJsonMsg = responseMessage.Content.ReadAsStringAsync().Result;
                         }
                     }
                 }
             }
 
-            return responseMessage;
+            return sResponseJsonMsg;
+            // return responseMessage;
         }
 
         // PUT: api/Grove/5
