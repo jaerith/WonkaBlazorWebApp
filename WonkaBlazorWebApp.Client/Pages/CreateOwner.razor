@@ -2,86 +2,82 @@
 @inject HttpClient Http
 @inject HttpClient httpClient
 
-<h1>Rule Tree Reports</h1>
+<h1>Rule Tree Owners</h1>
 
-<p>This component demonstrates fetching reports from the server.</p>
+<p>This component demonstrates how to register a potential owner for a RuleTree (i.e., a user account on the chain).</p>
 
-@if (reports == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>RuleTree ID</th>
-                <th>Execution Result</th>
-                <th>Gas Cost</th>
-                <th>DateTime Executed</th>
-                <th>Failed RS (ID)</th>
-                <th>Failed RS (Reason)</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var report in reports)
+<div class="row">
+    <div class="col-md-4">
+        <label for="Owner" class="control-label">Owner</label>
+    </div>
+</div>
+<div class="row" style="padding-top:10px">
+    <div class="col-md-4">
+        <select class="form-control" onchange="@OwnerClicked">
+            <option value="">-- Select Owner --</option>
+            @foreach (var OwnerId in owners.Keys)
             {
-                <tr>
-                    <td>@report.RecordData["RuleTreeId"]</td>
-                    <td>@report.OverallRuleTreeResult</td>
-                    <td>@report.ExecutionGasCost</td>
-                    <td>@report.InvocationTime</td>
-                    <td>@report.RuleSetFailMessages.First().Key</td>
-                    <td>@report.RuleSetFailMessages.First().Value</td>
-                </tr>
+                <option value="@OwnerId">@owners[OwnerId].OwnerName</option>
             }
-        </tbody>
-    </table>
-}
+        </select>
+    </div>
+</div>
+<div class="row" style="padding-top:50px">
+    <div class="col-md-4">
+        <label class="control-label">Owner Account: @ownerId</label>
+    </div>
+    <div class="col-md-4">
+        <label class="control-label">Owner Name: @ownerName</label>
+    </div>
+</div>
+<br/>
+<br/>
+<div class="row">
+    <div class="col-sm-2">
+        <button onclick="@Submit" class="btn">Submit</button>
+    </div>
+</div>
 
 @functions {
-    RuleTreeReport[] reports;
+
+    Dictionary<string, WonkaBlazorWebApp.Shared.WBWAOwner> owners;
+
+    string ownerId { get; set; }
+    string ownerName { get; set; }
+    string ownerPassword { get; set; }
 
     protected override async Task OnInitAsync()
     {
-        /*
-        reports = new RuleTreeReport[1];
-        reports[0] = new RuleTreeReport() { OverallRuleTreeResult = 1, ExecutionGasCost = 666, InvocationTime = "TODAY" };
-        reports[0].RecordData = new SubmittedRecordData() { RuleTreeId = "999" };
-        */
+        owners = new Dictionary<string, WonkaBlazorWebApp.Shared.WBWAOwner>();
 
-        // reports = await Http.GetJsonAsync<RuleTreeReport[]>("sample-data/reports.json");
-        // reports = await Http.GetJsonAsync<RuleTreeReport[]>("sample-data/reports2.json");
-        reports = await Http.GetJsonAsync<RuleTreeReport[]>("api/Reports?RuleTreeId=TEST");
+        owners["0x12890d2cce102216644c59dae5baed380d84830c"] =
+            new WonkaBlazorWebApp.Shared.WBWAOwner() { OwnerAddress = "0x12890d2cce102216644c59dae5baed380d84830c", OwnerName = "Bob Smith" };
 
-        foreach (RuleTreeReport TmpReport in reports)
-        {
-            if ((TmpReport.RuleSetFailMessages == null) || (TmpReport.RuleSetFailMessages.Count == 0))
-            {
-                TmpReport.OverallRuleTreeResult = 1;
-                TmpReport.RuleSetFailMessages[""] = "";
-            }
-        }
+        owners["0x7aba3df73d31904178512d36fbbe324464184730"] =
+            new WonkaBlazorWebApp.Shared.WBWAOwner() { OwnerAddress = "0x7aba3df73d31904178512d36fbbe324464184730", OwnerName = "Jane Doe" };
     }
 
-    class RuleTreeReport
+    protected async void OwnerClicked(UIChangeEventArgs ownerEvent)
     {
-        public bool SimulationMode { get; set; }
+        ownerId   = ownerEvent.Value.ToString();
 
-        // public List<string> RuleSetsWithWarnings { get; set; }
+        ownerName = owners[ownerId].OwnerName;
 
-        // public List<string> RuleSetsWithFailures { get; set; }
-
-        public Dictionary<string, string> RuleSetFailMessages { get; set; }
-
-        public Dictionary<string, string> RecordData { get; set; }
-
-        public string InvocationTime { get; set; }
-
-        public int ExecutionGasCost { get; set; }
-
-        public string LastRuleSetExecuted { get; set; }
-
-        public int OverallRuleTreeResult { get; set; }
+        ownerPassword = owners[ownerId].OwnerPassword;
     }
+
+    /*
+    protected async void OwnerClicked()
+    {
+
+    }
+    */
+
+    private async void Submit()
+    {
+        WonkaBlazorWebApp.Shared.WBWAOwner newOwner = owners[ownerId];
+
+        // await Http.SendJsonAsync<WonkaBlazorWebApp.Shared.WBWAOwner>(System.Net.Http.HttpMethod.Post, "api/treeowner", newOwner);
+    }
+
 }
