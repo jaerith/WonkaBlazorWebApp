@@ -2,86 +2,97 @@
 @inject HttpClient Http
 @inject HttpClient httpClient
 
-<h1>Rule Tree Reports</h1>
+<h1>Create RuleTree</h1>
 
-<p>This component demonstrates fetching reports from the server.</p>
+<p>This component demonstrates how to create a RuleTree either on the .NET domain or the chain.</p>
 
-@if (reports == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>RuleTree ID</th>
-                <th>Execution Result</th>
-                <th>Gas Cost</th>
-                <th>DateTime Executed</th>
-                <th>Failed RS (ID)</th>
-                <th>Failed RS (Reason)</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var report in reports)
-            {
-                <tr>
-                    <td>@report.RecordData["RuleTreeId"]</td>
-                    <td>@report.OverallRuleTreeResult</td>
-                    <td>@report.ExecutionGasCost</td>
-                    <td>@report.InvocationTime</td>
-                    <td>@report.RuleSetFailMessages.First().Key</td>
-                    <td>@report.RuleSetFailMessages.First().Value</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+<div>
+    <div class="row">
+        <div class="col-sm-3">
+            <p>Grove ID</p>
+        </div>
+        <div class="col-sm-4">
+            <input placeholder="GroveId" bind="@GroveId" />
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-3">
+            <p>RuleTree ID</p>
+        </div>
+        <div class="col-sm-4">
+            <input placeholder="RuleTreeId" bind="@RuleTreeId" />
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-3">
+            <p>RuleTree Markup Url</p>
+        </div>
+        <div class="col-sm-4">
+            <input placeholder="RuleTreeMarkupUrl" bind="@MarkupUrl" />
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-3">
+            <p>Serialize to Blockchain</p>
+        </div>
+        <div class="col-sm-4">
+            <input type="checkbox" checked="@SerializeToChain">
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-3">
+            <p>Result</p>
+        </div>
+        <div class="col-sm-4">
+            <p>Msg: @finalresult</p>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-2">
+            <button onclick="@Submit" class="btn">Submit</button>
+        </div>
+    </div>
+</div>
 
 @functions {
-    RuleTreeReport[] reports;
+
+    string GroveId;
+    string RuleTreeId;
+    string MarkupUrl;
+    bool   UseOrchMode;
+    bool   SerializeToChain;
+
+    string finalresult;
 
     protected override async Task OnInitAsync()
     {
-        /*
-        reports = new RuleTreeReport[1];
-        reports[0] = new RuleTreeReport() { OverallRuleTreeResult = 1, ExecutionGasCost = 666, InvocationTime = "TODAY" };
-        reports[0].RecordData = new SubmittedRecordData() { RuleTreeId = "999" };
-        */
+        GroveId    = "NewSaleGroup";
+        RuleTreeId = "VATCalculationExample";
+        MarkupUrl  = WonkaBlazorWebApp.Shared.WBWAConstants.CONST_VAT_CALC_RULETREE_URL;
 
-        // reports = await Http.GetJsonAsync<RuleTreeReport[]>("sample-data/reports.json");
-        // reports = await Http.GetJsonAsync<RuleTreeReport[]>("sample-data/reports2.json");
-        reports = await Http.GetJsonAsync<RuleTreeReport[]>("api/Reports?RuleTreeId=TEST");
-
-        foreach (RuleTreeReport TmpReport in reports)
-        {
-            if ((TmpReport.RuleSetFailMessages == null) || (TmpReport.RuleSetFailMessages.Count == 0))
-            {
-                TmpReport.OverallRuleTreeResult = 1;
-                TmpReport.RuleSetFailMessages[""] = "";
-            }
-        }
+        UseOrchMode      = true;
+        SerializeToChain = true;
     }
 
-    class RuleTreeReport
+    private async void Submit()
     {
-        public bool SimulationMode { get; set; }
+        WonkaBlazorWebApp.Shared.WBWARuleTree newRuleTree = new WonkaBlazorWebApp.Shared.WBWARuleTree();
 
-        // public List<string> RuleSetsWithWarnings { get; set; }
+        newRuleTree.GroveId           = GroveId;
+        newRuleTree.RuleTreeId        = RuleTreeId;
+        newRuleTree.RuleTreeOriginUrl = MarkupUrl;
 
-        // public List<string> RuleSetsWithFailures { get; set; }
+        newRuleTree.UsingOrchestrationMode = UseOrchMode;
+        newRuleTree.SerializeToBlockchain  = SerializeToChain;
 
-        public Dictionary<string, string> RuleSetFailMessages { get; set; }
+        Http.SendJsonAsync<WonkaBlazorWebApp.Shared.WBWARuleTree>(System.Net.Http.HttpMethod.Post, "api/ruletree", newRuleTree);
 
-        public Dictionary<string, string> RecordData { get; set; }
-
-        public string InvocationTime { get; set; }
-
-        public int ExecutionGasCost { get; set; }
-
-        public string LastRuleSetExecuted { get; set; }
-
-        public int OverallRuleTreeResult { get; set; }
+        finalresult = "Done!";
     }
+
 }
