@@ -27,13 +27,11 @@ namespace WonkaBlazorWebApp.Server.Controllers
         {
             string sReportsJson = "";
 
-            string sBaseUrl = "http:/yourwebsite.here.net";
-
             if (!String.IsNullOrEmpty(RuleTreeId))
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    var ResponseMsg = client.GetAsync(sBaseUrl + "/api/Report?RuleTreeId=" + RuleTreeId).Result;
+                    var ResponseMsg = client.GetAsync(Shared.WBWAConstants.CONST_REST_API_BASE_URL + "/api/Report?RuleTreeId=" + RuleTreeId).Result;
 
                     sReportsJson = ResponseMsg.Content.ReadAsStringAsync().Result;
 

@@ -35,8 +35,6 @@ namespace WonkaBlazorWebApp.Server.Controllers
         [HttpPost]
         public string Post(WonkaBlazorWebApp.Shared.WBWAGrove poGrove)
         {
-            string sBaseUrl = "http:/yourwebsite.here.net";
-
             string sResponseJsonMsg = "";
             // HttpResponseMessage responseMessage = new HttpResponseMessage() { StatusCode = HttpStatusCode.BadRequest };
 
@@ -44,7 +42,7 @@ namespace WonkaBlazorWebApp.Server.Controllers
             {
                 using (var client = new HttpClient())
                 {
-                    using (var request = new HttpRequestMessage(HttpMethod.Post, sBaseUrl + "/api/Grove"))
+                    using (var request = new HttpRequestMessage(HttpMethod.Post, Shared.WBWAConstants.CONST_REST_API_BASE_URL + "/api/Grove"))
                     {
                         var json = JsonConvert.SerializeObject(poGrove);
                         using (var stringContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json"))
