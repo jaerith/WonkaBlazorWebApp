@@ -6,35 +6,38 @@
 
 <p>This component demonstrates how to register a potential owner for a RuleTree (i.e., a user account on the chain).</p>
 
-<div class="row">
-    <div class="col-md-4">
-        <label for="Owner" class="control-label">Owner</label>
+<div>
+    <div class="row">
+        <div class="col-sm-3">
+            <p>Owner ID</p>
+        </div>
+        <div class="col-sm-4">
+            <input placeholder="Enter Owner ID" bind="@ownerId" />
+        </div>
     </div>
-</div>
-<div class="row" style="padding-top:10px">
-    <div class="col-md-4">
-        <select class="form-control" onchange="@OwnerClicked">
-            <option value="">-- Select Owner --</option>
-            @foreach (var OwnerId in owners.Keys)
-            {
-                <option value="@OwnerId">@owners[OwnerId].OwnerName</option>
-            }
-        </select>
+    <br />
+    <div class="row">
+        <div class="col-sm-3">
+            <p>Owner Name</p>
+        </div>
+        <div class="col-sm-4">
+            <input placeholder="Enter Owner Name" bind="@ownerName" />
+        </div>
     </div>
-</div>
-<div class="row" style="padding-top:50px">
-    <div class="col-md-4">
-        <label class="control-label">Owner Account: @ownerId</label>
+    <br />
+    <div class="row">
+        <div class="col-sm-3">
+            <p>Result</p>
+        </div>
+        <div class="col-sm-4">
+            <text readonly bind="@finalresult" />
+        </div>
     </div>
-    <div class="col-md-4">
-        <label class="control-label">Owner Name: @ownerName</label>
-    </div>
-</div>
-<br/>
-<br/>
-<div class="row">
-    <div class="col-sm-2">
-        <button onclick="@Submit" class="btn">Submit</button>
+    <br />
+    <div class="row">
+        <div class="col-sm-2">
+            <button onclick="@Submit" class="btn">Submit</button>
+        </div>
     </div>
 </div>
 
@@ -42,42 +45,36 @@
 
     Dictionary<string, WonkaBlazorWebApp.Shared.WBWAOwner> owners;
 
-    string ownerId { get; set; }
-    string ownerName { get; set; }
-    string ownerPassword { get; set; }
+    string ownerId;
+    string ownerName;
+    string ownerPassword;
+    string finalresult;
 
     protected override async Task OnInitAsync()
     {
         owners = new Dictionary<string, WonkaBlazorWebApp.Shared.WBWAOwner>();
 
         owners["0x12890d2cce102216644c59dae5baed380d84830c"] =
-            new WonkaBlazorWebApp.Shared.WBWAOwner() { OwnerAddress = "0x12890d2cce102216644c59dae5baed380d84830c", OwnerName = "Bob Smith" };
+            new WonkaBlazorWebApp.Shared.WBWAOwner() { OwnerAddress = "0x12890d2cce102216644c59dae5baed380d84830c", OwnerName = "Main User" };
 
         owners["0x7aba3df73d31904178512d36fbbe324464184730"] =
-            new WonkaBlazorWebApp.Shared.WBWAOwner() { OwnerAddress = "0x7aba3df73d31904178512d36fbbe324464184730", OwnerName = "Jane Doe" };
+            new WonkaBlazorWebApp.Shared.WBWAOwner() { OwnerAddress = "0x7aba3df73d31904178512d36fbbe324464184730", OwnerName = "User Two" };
+
+        owners["0x12890d2cce102216644c59dae5baed380d84830c"].OwnerPassword = "N/A";
+        owners["0x7aba3df73d31904178512d36fbbe324464184730"].OwnerPassword = "N/A";
+
+        ownerId       = "0x7aba3df73d31904178512d36fbbe324464184730";
+        ownerName     = owners["0x7aba3df73d31904178512d36fbbe324464184730"].OwnerName;
+        ownerPassword = owners["0x7aba3df73d31904178512d36fbbe324464184730"].OwnerPassword;
     }
-
-    protected async void OwnerClicked(UIChangeEventArgs ownerEvent)
-    {
-        ownerId   = ownerEvent.Value.ToString();
-
-        ownerName = owners[ownerId].OwnerName;
-
-        ownerPassword = owners[ownerId].OwnerPassword;
-    }
-
-    /*
-    protected async void OwnerClicked()
-    {
-
-    }
-    */
 
     private async void Submit()
     {
         WonkaBlazorWebApp.Shared.WBWAOwner newOwner = owners[ownerId];
 
-        // await Http.SendJsonAsync<WonkaBlazorWebApp.Shared.WBWAOwner>(System.Net.Http.HttpMethod.Post, "api/treeowner", newOwner);
+        await Http.SendJsonAsync<WonkaBlazorWebApp.Shared.WBWAOwner>(System.Net.Http.HttpMethod.Post, "api/treeowner", newOwner);
+
+        finalresult = "Done!";
     }
 
 }
