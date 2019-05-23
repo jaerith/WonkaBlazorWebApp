@@ -2,86 +2,144 @@
 @inject HttpClient Http
 @inject HttpClient httpClient
 
-<h1>Rule Tree Reports</h1>
+<h1>Execute the RuleTree</h1>
 
-<p>This component demonstrates fetching reports from the server.</p>
+<p>This component demonstrates how to invoke the RuleTree on the .NET server (i.e., a simulation) or on the chain.</p>
 
-@if (reports == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>RuleTree ID</th>
-                <th>Execution Result</th>
-                <th>Gas Cost</th>
-                <th>DateTime Executed</th>
-                <th>Failed RS (ID)</th>
-                <th>Failed RS (Reason)</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var report in reports)
-            {
-                <tr>
-                    <td>@report.RecordData["RuleTreeId"]</td>
-                    <td>@report.OverallRuleTreeResult</td>
-                    <td>@report.ExecutionGasCost</td>
-                    <td>@report.InvocationTime</td>
-                    <td>@report.RuleSetFailMessages.First().Key</td>
-                    <td>@report.RuleSetFailMessages.First().Value</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+<div>
+    <div class="row">
+        <div class="col-sm-3">
+            <p>RuleTree ID</p>
+        </div>
+        <div class="col-sm-4">
+            <input placeholder="RuleTreeId" bind="@RuleTreeId" />
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-3">
+            <p>New Sale EAN</p>
+        </div>
+        <div class="col-sm-4">
+            <input placeholder="Rule Tree Id" bind="@NewSaleEAN" />
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-3">
+            <p>New Sale Item Type</p>
+        </div>
+        <div class="col-sm-4">
+            <input placeholder="Type" bind="@NewSaleItemType" />
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-3">
+            <p>Country Of Sale</p>
+        </div>
+        <div class="col-sm-4">
+            <input placeholder="Country" bind="@CountryOfSale" />
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-3">
+            <p>New Sales Trans Seq</p>
+        </div>
+        <div class="col-sm-4">
+            <input placeholder="Trans Seq" bind="@NewSalesTransSeq" />
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-3">
+            <p>Invoke on Blockchain</p>
+        </div>
+        <div class="col-sm-4">
+            <input type="checkbox" checked="@InvokeOnChain">
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-3">
+            <p>Result</p>
+        </div>
+        <div class="col-sm-4">
+            <p>@finalresult</p>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-2">
+            <button onclick="@Submit" class="btn">Submit</button>
+        </div>
+        <div class="col-sm-2">
+            <button onclick="@GetStatus" class="btn">Get Status</button>
+        </div>
+    </div>
+</div>
 
 @functions {
-    RuleTreeReport[] reports;
 
-    protected override async Task OnInitAsync()
+    string RuleTreeId;
+    string NewSaleEAN;
+    string NewSaleItemType;
+    string NewSalesTransSeq;
+    string CountryOfSale;
+    bool   InvokeOnChain;
+
+    bool   requestDone;
+    string finalresult;
+
+    private async void GetStatus()
     {
-        /*
-        reports = new RuleTreeReport[1];
-        reports[0] = new RuleTreeReport() { OverallRuleTreeResult = 1, ExecutionGasCost = 666, InvocationTime = "TODAY" };
-        reports[0].RecordData = new SubmittedRecordData() { RuleTreeId = "999" };
-        */
-
-        // reports = await Http.GetJsonAsync<RuleTreeReport[]>("sample-data/reports.json");
-        // reports = await Http.GetJsonAsync<RuleTreeReport[]>("sample-data/reports2.json");
-        reports = await Http.GetJsonAsync<RuleTreeReport[]>("api/Reports?RuleTreeId=TEST");
-
-        foreach (RuleTreeReport TmpReport in reports)
+        if (requestDone)
         {
-            if ((TmpReport.RuleSetFailMessages == null) || (TmpReport.RuleSetFailMessages.Count == 0))
-            {
-                TmpReport.OverallRuleTreeResult = 1;
-                TmpReport.RuleSetFailMessages[""] = "";
-            }
+            finalresult = "Done!";
         }
     }
 
-    class RuleTreeReport
+    protected override async Task OnInitAsync()
     {
-        public bool SimulationMode { get; set; }
+        RuleTreeId       = "VATCalculationExample";
+        NewSaleEAN       = "9781234567890";
+        NewSaleItemType  = "Widget";
+        CountryOfSale    = "UK";
+        NewSalesTransSeq = "123456789";
+        InvokeOnChain    = true;
 
-        // public List<string> RuleSetsWithWarnings { get; set; }
-
-        // public List<string> RuleSetsWithFailures { get; set; }
-
-        public Dictionary<string, string> RuleSetFailMessages { get; set; }
-
-        public Dictionary<string, string> RecordData { get; set; }
-
-        public string InvocationTime { get; set; }
-
-        public int ExecutionGasCost { get; set; }
-
-        public string LastRuleSetExecuted { get; set; }
-
-        public int OverallRuleTreeResult { get; set; }
+        requestDone = false;
     }
+
+    private async Task SetFinalResult()
+    {
+        finalresult = "Done!";
+    }
+
+    private async Task SetRequestDone()
+    {
+        requestDone = true;
+    }
+
+    private async void Submit()
+    {
+        finalresult = "Sending request...";
+
+        WonkaBlazorWebApp.Shared.WBWAInvokeRecord newInvokeRecord = new WonkaBlazorWebApp.Shared.WBWAInvokeRecord();
+
+        newInvokeRecord.SetRuleTreeId(RuleTreeId);
+
+        newInvokeRecord.RecordData["NewSaleEAN"]       = NewSaleEAN;
+        newInvokeRecord.RecordData["NewSaleItemType"]  = NewSaleItemType;
+        newInvokeRecord.RecordData["CountryOfSale"]    = CountryOfSale;
+        newInvokeRecord.RecordData["NewSalesTransSeq"] = NewSalesTransSeq;
+
+        newInvokeRecord.InvokeOnChain = InvokeOnChain;
+
+        await Http.SendJsonAsync<WonkaBlazorWebApp.Shared.WBWAInvokeRecord>(System.Net.Http.HttpMethod.Post, "api/invoke", newInvokeRecord);
+
+        await SetRequestDone();
+    }
+
 }
