@@ -48,13 +48,16 @@
             <p>Result</p>
         </div>
         <div class="col-sm-4">
-            <p>Msg: @finalresult</p>
+            <p>@finalresult</p>
         </div>
     </div>
     <br />
     <div class="row">
         <div class="col-sm-2">
             <button onclick="@Submit" class="btn">Submit</button>
+        </div>
+        <div class="col-sm-2">
+            <button onclick="@GetStatus" class="btn">Get Status</button>
         </div>
     </div>
 </div>
@@ -67,7 +70,16 @@
     bool   UseOrchMode;
     bool   SerializeToChain;
 
+    bool   requestDone;
     string finalresult;
+
+    private async void GetStatus()
+    {
+        if (requestDone)
+        {
+            finalresult = "Done!";
+        }
+    }
 
     protected override async Task OnInitAsync()
     {
@@ -77,10 +89,24 @@
 
         UseOrchMode      = true;
         SerializeToChain = true;
+
+        requestDone = false;
+    }
+
+    private async Task SetFinalResult()
+    {
+        finalresult = "Done!";
+    }
+
+    private async Task SetRequestDone()
+    {
+        requestDone = true;
     }
 
     private async void Submit()
     {
+        finalresult = "Sending request...";
+
         WonkaBlazorWebApp.Shared.WBWARuleTree newRuleTree = new WonkaBlazorWebApp.Shared.WBWARuleTree();
 
         newRuleTree.GroveId           = GroveId;
@@ -90,9 +116,9 @@
         newRuleTree.UsingOrchestrationMode = UseOrchMode;
         newRuleTree.SerializeToBlockchain  = SerializeToChain;
 
-        Http.SendJsonAsync<WonkaBlazorWebApp.Shared.WBWARuleTree>(System.Net.Http.HttpMethod.Post, "api/ruletree", newRuleTree);
+        await Http.SendJsonAsync<WonkaBlazorWebApp.Shared.WBWARuleTree>(System.Net.Http.HttpMethod.Post, "api/ruletree", newRuleTree);
 
-        finalresult = "Done!";
+        await SetRequestDone();
     }
 
 }
