@@ -23,15 +23,20 @@ namespace WonkaBlazorWebApp.Server.Controllers
 
         // GET: api/Reports/5
         // [HttpGet("{id}", Name = "Get")]
-        public string GetReports(string RuleTreeId)
+        public string GetReports(string RuleTreeId = null, string GroveId = null)
         {
             string sReportsJson = "";
 
-            if (!String.IsNullOrEmpty(RuleTreeId))
+            if (!String.IsNullOrEmpty(RuleTreeId) || !String.IsNullOrEmpty(GroveId))
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    var ResponseMsg = client.GetAsync(Shared.WBWAConstants.CONST_REST_API_BASE_URL + "/api/Report?RuleTreeId=" + RuleTreeId).Result;
+                    HttpResponseMessage ResponseMsg = new HttpResponseMessage();
+
+                    if (!String.IsNullOrEmpty(RuleTreeId))
+                        ResponseMsg = client.GetAsync(Shared.WBWAConstants.CONST_REST_API_BASE_URL + "/api/Report?RuleTreeId=" + RuleTreeId).Result;
+                    else if (!String.IsNullOrEmpty(GroveId))
+                        ResponseMsg = client.GetAsync(Shared.WBWAConstants.CONST_REST_API_BASE_URL + "/api/Report?GroveId=" + GroveId).Result;
 
                     sReportsJson = ResponseMsg.Content.ReadAsStringAsync().Result;
 

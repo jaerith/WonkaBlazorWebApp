@@ -40,19 +40,20 @@ else
 }
 
 @functions {
+
     RuleTreeReport[] reports;
 
     protected override async Task OnInitAsync()
     {
-        /*
-        reports = new RuleTreeReport[1];
-        reports[0] = new RuleTreeReport() { OverallRuleTreeResult = 1, ExecutionGasCost = 666, InvocationTime = "TODAY" };
-        reports[0].RecordData = new SubmittedRecordData() { RuleTreeId = "999" };
-        */
+        string RuleTreeId = "TEST";
+        string GroveId    = "NewSaleGroup";
+
+        RuleTreeId = "VATCalculationExample";
 
         // reports = await Http.GetJsonAsync<RuleTreeReport[]>("sample-data/reports.json");
         // reports = await Http.GetJsonAsync<RuleTreeReport[]>("sample-data/reports2.json");
-        reports = await Http.GetJsonAsync<RuleTreeReport[]>("api/Reports?RuleTreeId=TEST");
+        // reports = await Http.GetJsonAsync<RuleTreeReport[]>("api/Reports?RuleTreeId=" + RuleTreeId);
+        reports = await Http.GetJsonAsync<RuleTreeReport[]>("api/Reports?GroveId=" + GroveId);
 
         foreach (RuleTreeReport TmpReport in reports)
         {
