@@ -1,0 +1,101 @@
+﻿@page "/storemarkup"
+@inject HttpClient Http
+@inject HttpClient httpClient
+
+<h1>Submit Markup for Storage</h1>
+
+<p>This component demonstrates how to submit markup for a RuleTree, so that it can be stored for later retrieval.</p>
+
+<div>
+    <div class="row">
+        <div class="col-sm-3">
+            <p>Rules Markup</p>
+        </div>
+        <div class="col-sm-4">
+            <input placeholder="Enter Rules Markup" bind="@rulesMarkup" />
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-3">
+            <p>Generated Key</p>
+        </div>
+        <div class="col-sm-4">
+            <text readonly bind="@markupKey" />
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-2">
+            <button onclick="@Submit" class="btn">Submit</button>
+        </div>
+        <div class="col-sm-2">
+            <button onclick="@GetStatus" class="btn">Get Status</button>
+        </div>
+    </div>
+</div>
+
+@functions {
+
+    string rulesMarkup;
+    string markupKey;
+
+    private async void GetStatus()
+    {
+        /*
+        if (requestDone)
+        {
+            finalresult = "Done!";
+        }
+        */
+    }
+
+    protected override async Task OnInitAsync()
+    {
+        rulesMarkup =
+@"
+&lt;RuleTree xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""&gt;
+
+   &lt;if description=""Start a new sales transaction""&gt;
+      &lt;criteria op=""AND""&gt;
+         &lt;eval id=""pop1""&gt;(N.NewSalesTransSeq) POPULATED&lt;/eval&gt;
+      &lt;/criteria&gt;
+
+      &lt;if description=""Checking Input Values""&gt;
+           &lt;criteria op=""AND""&gt;
+               &lt;eval id=""pop2""&gt;(N.NewSaleEAN) POPULATED&lt;/eval&gt;
+               &lt;!-- Since Solidity does not support decimals, we must divide in order to get a close (but still imprecise) estimate --&gt;
+               &lt;eval id=""asn0""&gt;(N.NewSaleVATRateDenom) INVOKE_VAT_LOOKUP (N.NewSaleItemType, N.CountryOfSale)&lt;/eval&gt;
+           &lt;/criteria&gt;
+
+           &lt;validate err=""severe""&gt;
+               &lt;criteria op=""AND""&gt;
+                   &lt;eval id=""cmp2""&gt;(N.NewSalePrice) GT (0.00)&lt;/eval&gt;
+                   &lt;eval id=""cmp3""&gt;(N.PrevSellTaxAmount) GT (0.00)&lt;/eval&gt;
+               &lt;/criteria&gt;
+
+               &lt;failure_message&gt;ERROR!  Required inputs for VAT calculation have not been provided.&lt;/failure_message&gt;
+               &lt;success_message /&gt;
+           &lt;/validate&gt;           
+       &lt;/if&gt;
+
+   &lt;/if&gt;    
+    
+&lt;/RuleTree&gt;
+";
+
+        markupKey = "dummyKey";
+    }
+
+    private async void Submit()
+    {
+        // var response = httpClient.GetAsync("http://localhost:56653/api/markup?markupid=http://localwonkacache/7f5e9416-249a-4151-9db8-da2888ac0ab2").Result;
+
+        /*
+        await Http.SendJsonAsync<WonkaBlazorWebApp.Shared.WBWAOwner>(System.Net.Http.HttpMethod.Post, "api/treeowner", newOwner);
+
+        finalresult = "Done!";
+        */
+    }
+
+}
