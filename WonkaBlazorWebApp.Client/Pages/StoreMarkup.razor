@@ -11,10 +11,17 @@
         <div class="col-sm-3">
             <p>Rules Markup</p>
         </div>
+    </div>
+    <div class="row">
         <div class="col-md-4">
             <textarea placeholder="Enter Rules Markup" class="form-control" bind="@rulesMarkup" rows="20" />
-            <!--<textarea placeholder="Enter Rules Markup" class="col col-lg-2" bind="@rulesMarkup" rows="20" />-->
         </div>
+        
+        <!-- NOTE: To be implemented later                    
+        <div class="row">
+            <MonacoEditor Width="1200" Height="600" bind="@rulesMarkup" />
+        </div>
+        -->
     </div>
     <br />
     <div class="row">
@@ -22,7 +29,7 @@
             <p>Generated Key</p>
         </div>
         <div class="col-sm-4">
-            <text readonly bind="@markupKey" />
+            <p>@markupKey</p>
         </div>
     </div>
     <br />
@@ -38,17 +45,17 @@
 
 @functions {
 
+    bool requestDone;
+
     string rulesMarkup;
     string markupKey;
 
-    private async void GetStatus()
+    private async Task GetStatus()
     {
-        /*
-        if (requestDone)
+        if (String.IsNullOrEmpty(markupKey))
         {
-            finalresult = "Done!";
+            markupKey = await Http.GetJsonAsync<string>("api/markup?MarkupStorageUrl=LastMarkupGenKey");
         }
-        */
     }
 
     protected override async Task OnInitAsync()
@@ -57,40 +64,40 @@
 @"<?xml version=""1.0""?>
 <RuleTree xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
 
-   <if description=""Start a new sales transaction"">
-      <criteria op=""AND"">
-         <eval id=""pop1"">(N.NewSalesTransSeq) POPULATED</eval>
-		 <eval id=""asn1"">(N.NewSalesTransSeq) ASSIGN ('1')</eval>
-      </criteria>
+<if description=""Start a new sales transaction"">
+  <criteria op=""AND"">
+     <eval id=""pop1"">(N.NewSalesTransSeq) POPULATED</eval>
+     <eval id=""asn1"">(N.NewSalesTransSeq) ASSIGN ('1')</eval>
+  </criteria>
 
-      <if description=""Checking Input Values"">
+  <if description=""Checking Input Values"">
+       <criteria op=""AND"">
+           <eval id=""pop2"">(N.NewSaleEAN) POPULATED</eval>
+           <eval id=""asn2"">(N.NewSalesTransSeq) ASSIGN ('2')</eval>
+       </criteria>
+
+       <validate err=""severe"">
            <criteria op=""AND"">
-               <eval id=""pop2"">(N.NewSaleEAN) POPULATED</eval>
-			   <eval id=""asn2"">(N.NewSalesTransSeq) ASSIGN ('2')</eval>
+               <eval id=""cmp2"">(N.NewSalePrice) GT (0.00)</eval>
+               <eval id=""asn3"">(N.NewSalesTransSeq) ASSIGN ('3')</eval>
            </criteria>
 
-           <validate err=""severe"">
-               <criteria op=""AND"">
-                   <eval id=""cmp2"">(N.NewSalePrice) GT (0.00)</eval>
-				   <eval id=""asn3"">(N.NewSalesTransSeq) ASSIGN ('3')</eval>
-               </criteria>
+           <failure_message>ERROR!  Required inputs for VAT calculation have not been provided.</failure_message>
+           <success_message/>
+       </validate>
 
-               <failure_message>ERROR!  Required inputs for VAT calculation have not been provided.</failure_message>
-               <success_message/>
-           </validate>
-		   
-		  <validate err=""severe"">
-               <criteria op=""AND"">
-                   <eval id=""cmp2"">(N.NewSalePrice) LT (1000000.00)</eval>
-				   <eval id=""asn4"">(N.NewSalesTransSeq) ASSIGN ('4')</eval>
-               </criteria>
+      <validate err=""severe"">
+           <criteria op=""AND"">
+               <eval id=""cmp2"">(N.NewSalePrice) LT (1000000.00)</eval>
+               <eval id=""asn4"">(N.NewSalesTransSeq) ASSIGN ('4')</eval>
+           </criteria>
 
-               <failure_message>ERROR!  Required inputs for VAT calculation exceed maximum allowed value.</failure_message>
-               <success_message/>
-           </validate>
+           <failure_message>ERROR!  Required inputs for VAT calculation exceed maximum allowed value.</failure_message>
+           <success_message/>
+       </validate>
 
-       </if>	   
-   </if>        
+   </if>
+</if>
 </RuleTree>
 ";
 
@@ -99,13 +106,17 @@
 
     private async void Submit()
     {
+        requestDone = false;
+        markupKey   = "";
+
         // var response = httpClient.GetAsync("http://localhost:56653/api/markup?markupid=http://localwonkacache/7f5e9416-249a-4151-9db8-da2888ac0ab2").Result;
+        // markupKey = Http.SendJsonAsync<string>(System.Net.Http.HttpMethod.Post, "api/markup", rulesMarkup).Result;
 
-        /*
-        await Http.SendJsonAsync<WonkaBlazorWebApp.Shared.WBWAOwner>(System.Net.Http.HttpMethod.Post, "api/treeowner", newOwner);
+        await Http.SendJsonAsync<string>(System.Net.Http.HttpMethod.Post, "api/markup", rulesMarkup);
 
-        finalresult = "Done!";
-        */
+        // markupKey = await Http.GetJsonAsync<string>("api/markup?MarkupStorageUrl=LastMarkupGenKey");
+
+        await GetStatus();
     }
 
 }
