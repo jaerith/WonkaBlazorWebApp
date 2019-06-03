@@ -2,44 +2,71 @@
 @using WonkaBlazorWebApp.Shared
 @inject HttpClient Http
 
-<h1>Weather forecast</h1>
+<h1>Peek at Data on the Chain</h1>
 
-<p>This component demonstrates fetching data from the server.</p>
+<p>This component demonstrates how to inspect data on the chain.</p>
 
-@if (forecasts == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in forecasts)
+<div>
+    <div class="row">
+        <div class="col-sm-3">
+            <label for="attrSelect1">Pick Attribute</label>
+            <!--
+            <select class="form-control" id="attrSelect1">
+                <option>NewSalesTransSeq</option>
+                <option>NewVATAmountForHMRC</option>
+                <option>NewSellTaxAmount</option>
+                <option>NewSalePrice</option>
+            </select>
+            -->
+            <!-- 
+            @if (attrNameList != null)
             {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
+                <select id="attrSelect1" value=@attrName >
+                    <option value="0"></option>
+                    @foreach (var tmpAttrName in attrNameList)
+                    {
+                        <option value="@tmpAttrName">@tmpAttrName</option>
+                    }
+                </select>
             }
-        </tbody>
-    </table>
-}
+            -->
+            <input placeholder="NewVATAmountForHMRC" bind="@attrValue" />
+        </div>
+    </div>
+    <br />
+    <br />
+    <div class="row">
+        <div class="col-sm-3">
+            <label>Attribute Value</label>
+        </div>
+        <div class="col-sm-4">
+            <p>@attrValue</p>
+        </div>
+    </div>
+    <br />
+    <br />
+    <div class="row">
+        <div class="col-sm-2">
+            <button onclick="@Submit" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+</div>
 
 @functions {
-    WeatherForecast[] forecasts;
+
+    string[] attrNameList = new string[] { "NewSalesTransSeq", "NewVATAmountForHMRC", "NewSellTaxAmount", "NewSalePrice" };
+
+    string attrName  = "NewSalesTransSeq";
+    string attrValue = "";
 
     protected override async Task OnInitAsync()
     {
-        forecasts = await Http.GetJsonAsync<WeatherForecast[]>("api/SampleData/WeatherForecasts");
+        attrValue = await Http.GetJsonAsync<string>("api/chain?name=" + attrName);
     }
+
+    private async Task Submit()
+    {
+        attrValue = await Http.GetJsonAsync<string>("api/chain?name=" + attrName);
+    }
+
 }
