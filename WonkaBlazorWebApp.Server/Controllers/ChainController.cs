@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+using Newtonsoft.Json;
+
+using WonkaBlazorWebApp.Shared;
+
 namespace WonkaBlazorWebApp.Server.Controllers
 {
     [Route("api/[controller]")]
@@ -14,9 +18,9 @@ namespace WonkaBlazorWebApp.Server.Controllers
     {
         // GET: api/Chain/5
         // [HttpGet("{id}", Name = "Get")]
-        public string GetReports(string name = null)
+        public string GetValueOnChain(string name = null)
         {
-            string sAttrValue = "";
+            string sReportsJson = "";
 
             if (!String.IsNullOrEmpty(name))
             {
@@ -27,13 +31,13 @@ namespace WonkaBlazorWebApp.Server.Controllers
                     ResponseMsg = client.GetAsync(Shared.WBWAConstants.CONST_REST_API_BASE_URL + "/api/chain?type=attrval&id=" + name).Result;
 
                     if (ResponseMsg.IsSuccessStatusCode)
-                        sAttrValue = ResponseMsg.Content.ReadAsStringAsync().Result;
+                        sReportsJson = ResponseMsg.Content.ReadAsStringAsync().Result;
                     else
-                        sAttrValue = "Failed to retrieve value";
+                        sReportsJson = "{ \"" + WBWAConstants.CONST_CHAIN_RECORD_KEY_ATTR_VAL + "\" : \"Failed to retrieve value\" }";
                 }
             }
 
-            return sAttrValue;
+            return sReportsJson;
         }
 
     }
