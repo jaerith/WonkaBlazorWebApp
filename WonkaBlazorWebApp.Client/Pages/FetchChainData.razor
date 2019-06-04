@@ -30,7 +30,7 @@
                 </select>
             }
             -->
-            <input placeholder="NewVATAmountForHMRC" bind="@attrValue" />
+            <input placeholder="NewVATAmountForHMRC" bind="@attrName" />
         </div>
     </div>
     <br />
@@ -47,8 +47,12 @@
     <br />
     <div class="row">
         <div class="col-sm-2">
-            <button onclick="@Submit" class="btn btn-primary">Submit</button>
+            <button onclick="@GetValue" class="btn btn-primary">Get Value</button>
         </div>
+        <div class="col-sm-2">
+            <button onclick="@Refresh" class="btn btn-info">Refresh</button>
+        </div>
+
     </div>
 </div>
 
@@ -56,17 +60,30 @@
 
     string[] attrNameList = new string[] { "NewSalesTransSeq", "NewVATAmountForHMRC", "NewSellTaxAmount", "NewSalePrice" };
 
-    string attrName  = "NewSalesTransSeq";
-    string attrValue = "";
+    string attrName  = "NewVATAmountForHMRC";
+    string attrValue = "dummyVal";
 
     protected override async Task OnInitAsync()
     {
-        attrValue = await Http.GetJsonAsync<string>("api/chain?name=" + attrName);
+        // attrValue = await Http.GetJsonAsync<string>("api/chain?name=" + attrName);
     }
 
-    private async Task Submit()
+    private async Task GetValue()
     {
-        attrValue = await Http.GetJsonAsync<string>("api/chain?name=" + attrName);
+        Dictionary<string,string> record = await Http.GetJsonAsync<Dictionary<string,string>>("api/chain?name=" + attrName);
+
+        if (record.ContainsKey(WBWAConstants.CONST_CHAIN_RECORD_KEY_ATTR_VAL))
+        {
+            attrValue = record[WBWAConstants.CONST_CHAIN_RECORD_KEY_ATTR_VAL];
+        }
+    }
+
+    private async Task Refresh()
+    {
+        if (String.IsNullOrEmpty(attrValue))
+        {
+            attrValue = await Http.GetJsonAsync<string>("api/chain?name=" + attrName);
+        }
     }
 
 }
