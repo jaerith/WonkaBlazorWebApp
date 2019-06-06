@@ -20,4 +20,8 @@
     <ProjectReference Include="..\WonkaBlazorWebApp.Shared\WonkaBlazorWebApp.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Monaco\" />
+  </ItemGroup>
+
 </Project>
