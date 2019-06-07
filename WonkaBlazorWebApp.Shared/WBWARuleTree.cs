@@ -4,8 +4,32 @@ using System.Text;
 
 namespace WonkaBlazorWebApp.Shared
 {
+    public class WBWATreeAttrSource
+    {
+        public WBWATreeAttrSource(string psAttrName)
+        {
+            AttributeName = psAttrName;
+        }
+
+        public string AttributeName { get; set; }
+
+        public string BlockchainContractAddress { get; set; }
+
+        public string BlockchainGetValueMethod { get; set; }
+
+        public string BlockchainSenderAddress { get; set; }
+
+        public string BlockchainSetValueMethod { get; set; }
+
+        public string BlockchainSourceId { get; set; }
+
+        public string BlockchainTypeOfSource { get; set; }
+    }
+
     public class WBWARuleTree
     {
+        public List<WBWATreeAttrSource> AttributeSources { get; set; }
+
         public string GroveId { get; set; }
 
         public string RuleTreeId { get; set; }
