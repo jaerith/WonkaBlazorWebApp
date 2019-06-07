@@ -25,9 +25,27 @@ namespace WonkaBlazorWebApp.Server.Controllers
 
         // GET: api/RuleTree/5
         // [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        public string Get(string rtid)
         {
-            return "value";
+            string sRuleTreeJson = "";
+
+            if (!String.IsNullOrEmpty(rtid))
+            {
+                using (var client = new HttpClient())
+                {
+                    HttpResponseMessage ResponseMsg = new HttpResponseMessage();
+
+                    ResponseMsg = client.GetAsync(Shared.WBWAConstants.CONST_REST_API_BASE_URL + "/api/ruletree?RuleTreeId=" + rtid).Result;
+
+                    sRuleTreeJson = ResponseMsg.Content.ReadAsStringAsync().Result;
+                    
+                    // var RuleTree = JsonConvert.DeserializeObject<WonkaBlazorWebApp.Shared.WBWARuleTree>(sRuleTreeJson);
+
+                    // int x = 0;
+                }
+            }
+
+            return sRuleTreeJson;
         }
 
         // POST: api/RuleTree
