@@ -19,6 +19,15 @@
       "BlockchainTypeOfSource": "Contract"
     },
     {
+      "AttributeName": "DummyVal",
+      "BlockchainContractAddress": "0xD0828aEB00e4db6813e2f330318Ef94D2BbA2f60",
+      "BlockchainGetValueMethod": "getAttrValueBytes32",
+      "BlockchainSenderAddress": "0x12890d2cce102216644c59dae5baed380d84830c",
+      "BlockchainSetValueMethod": "setAttrValueBytes32",
+      "BlockchainSourceId": "N",
+      "BlockchainTypeOfSource": "Contract"
+    },
+    {
       "AttributeName": "NewSaleItemType",
       "BlockchainContractAddress": "0xD0828aEB00e4db6813e2f330318Ef94D2BbA2f60",
       "BlockchainGetValueMethod": "getAttrValueBytes32",
