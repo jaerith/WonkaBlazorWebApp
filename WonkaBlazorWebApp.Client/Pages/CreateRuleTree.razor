@@ -118,6 +118,8 @@
 
         await Http.SendJsonAsync<WonkaBlazorWebApp.Shared.WBWARuleTree>(System.Net.Http.HttpMethod.Post, "api/ruletree", newRuleTree);
 
+        WonkaBlazorWebApp.Client.Shared.SimpleCache.LastRuleTreeCreated = RuleTreeId;
+
         await SetRequestDone();
     }
 
