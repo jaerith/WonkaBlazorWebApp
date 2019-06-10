@@ -7,6 +7,6 @@ namespace WonkaBlazorWebApp.Client.Shared
 {
     public static class SimpleCache
     {
-        public static WonkaBlazorWebApp.Shared.WBWARuleTree LastRuleTreeCreated { get; set; }
+        public static string LastRuleTreeCreated { get; set; }
     }
 }
