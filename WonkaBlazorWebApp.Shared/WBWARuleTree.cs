@@ -6,6 +6,9 @@ namespace WonkaBlazorWebApp.Shared
 {
     public class WBWATreeAttrSource
     {
+        public WBWATreeAttrSource()
+        {}
+
         public WBWATreeAttrSource(string psAttrName)
         {
             AttributeName = psAttrName;
