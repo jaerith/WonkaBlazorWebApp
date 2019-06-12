@@ -127,6 +127,10 @@ namespace WonkaBlazorWebApp.Client.Pages
             // var response = httpClient.GetAsync("http://localhost:56653/api/markup?markupid=http://localwonkacache/7f5e9416-249a-4151-9db8-da2888ac0ab2").Result;
             // markupKey = Http.SendJsonAsync<string>(System.Net.Http.HttpMethod.Post, "api/markup", rulesMarkup).Result;
 
+            editorModel = await Monaco.Interop.EditorGetAsync(JSRuntime, editorModel);
+
+            rulesMarkup = editorModel.Script;
+
             await Client.SendJsonAsync<string>(System.Net.Http.HttpMethod.Post, "api/markup", rulesMarkup);
 
             // markupKey = await Http.GetJsonAsync<string>("api/markup?MarkupStorageUrl=LastMarkupGenKey");
