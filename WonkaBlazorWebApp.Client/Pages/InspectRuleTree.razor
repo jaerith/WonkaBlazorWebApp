@@ -1,0 +1,89 @@
+﻿@page "/inspectruletree"
+
+@inherits InspectRuleTreeIndexModel
+
+<h1>Inspect RuleTree Properties</h1>
+
+<p>This component demonstrates how to inspect the metadata about a ruletree.</p>
+
+@if (ruleTreeProps == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <br />
+    <br />
+    <div>
+        <div class="row">
+            <div class="col-sm-3">
+                <label for="attrSelect1"><b>Rule Tree Id:</b></label>
+            </div>
+            <div class="col-sm-4">
+                <input placeholder="Enter RuleTree ID" bind="@ruleTreeId" />
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-sm-3">
+                <label><b>Grove ID:</b></label>
+            </div>
+            <div class="col-sm-4">
+                <p>@groveId</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                <label><b>Grove Index:</b></label>
+            </div>
+            <div class="col-sm-4">
+                <p>@groveIdx</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                <label><b>Markup Origin URL:</b></label>
+            </div>
+            <div class="col-sm-4">
+                <p>@originUrl</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                <label><b>Serialized to Blockchain:</b></label>
+            </div>
+            <div class="col-sm-4">
+                <p>@serializedFlag</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                <label><b>Min Gas Cost:</b></label>
+            </div>
+            <div class="col-sm-4">
+                <p>@minGasCost</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                <label><b>Max Gas Cost:</b></label>
+            </div>
+            <div class="col-sm-4">
+                <p>@maxGasCost</p>
+            </div>
+        </div>
+        <br />
+        <br />
+        <div class="row">
+            <div class="col-sm-2">
+                <button onclick="@GetTreeProps" class="btn btn-primary">Get Rule Tree Props</button>
+            </div>
+            <!--
+            <div class="col-sm-2">
+                <button onclick="@Refresh" class="btn btn-info">Refresh</button>
+            </div>
+            -->
+
+        </div>
+    </div>
+}
