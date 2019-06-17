@@ -31,9 +31,18 @@ namespace WonkaBlazorWebApp.Shared
 
     public class WBWARuleTree
     {
+        public WBWARuleTree()
+        {
+            GroveIndex = 0;
+
+            MinGasCost = MaxGasCost = 0;
+        }
+
         public List<WBWATreeAttrSource> AttributeSources { get; set; }
 
         public string GroveId { get; set; }
+
+        public int GroveIndex { get; set; }
 
         public string RuleTreeId { get; set; }
 
@@ -42,5 +51,10 @@ namespace WonkaBlazorWebApp.Shared
         public bool UsingOrchestrationMode { get; set; }
 
         public bool SerializeToBlockchain { get; set; }
+
+        public int MinGasCost { get; set; }
+
+        public int MaxGasCost { get; set; }
+
     }
 }
