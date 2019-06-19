@@ -57,7 +57,16 @@
             <p>Invoke on Blockchain</p>
         </div>
         <div class="col-sm-4">
-            <input type="checkbox" checked="@InvokeOnChain">
+            <input type="checkbox" checked="@InvokeOnChain" />
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-3">
+            <p>Supply Transaction Gas</p>
+        </div>
+        <div class="col-sm-4">
+            <input placeholder="" bind="@SendTrxGas" />
         </div>
     </div>
     <br />
@@ -67,6 +76,12 @@
         </div>
         <div class="col-sm-4">
             <p>@finalresult</p>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-3">
+            <p class="text-danger">@errorMessage</p>
         </div>
     </div>
     <br />
@@ -82,23 +97,25 @@
 
 @functions {
 
-    string RuleTreeId;
-    string NewSaleEAN;
-    string NewSaleItemType;
-    string NewSalesTransSeq;
-    string CountryOfSale;
-    bool   InvokeOnChain;
+        string RuleTreeId;
+        string NewSaleEAN;
+        string NewSaleItemType;
+        string NewSalesTransSeq;
+        string CountryOfSale;
+        string SendTrxGas;
+        bool   InvokeOnChain;
 
-    bool   requestDone;
-    string finalresult;
+        bool   requestDone;
+        string finalresult;
+        string errorMessage;
 
-    private async void GetStatus()
-    {
-        if (requestDone)
+        private async void GetStatus()
         {
-            finalresult = "Done!";
+            if (requestDone)
+            {
+                finalresult = "Done!";
+            }
         }
-    }
 
     protected override async Task OnInitAsync()
     {
@@ -108,8 +125,10 @@
         CountryOfSale    = "UK";
         NewSalesTransSeq = "123456789";
         InvokeOnChain    = true;
+        SendTrxGas       = null;
 
-        requestDone = false;
+        requestDone  = false;
+        errorMessage = "ERROR!  base fee exceeds gas limit";
     }
 
     private async Task SetFinalResult()
@@ -135,9 +154,27 @@
         newInvokeRecord.RecordData["CountryOfSale"]    = CountryOfSale;
         newInvokeRecord.RecordData["NewSalesTransSeq"] = NewSalesTransSeq;
 
+        if (!String.IsNullOrEmpty(SendTrxGas))
+        {
+            uint nSendTrxGas = 0;
+
+            UInt32.TryParse(SendTrxGas, out nSendTrxGas);
+
+            if (nSendTrxGas > 0)
+            {
+                newInvokeRecord.SetTrxGas(nSendTrxGas);
+            }
+        }
+
         newInvokeRecord.InvokeOnChain = InvokeOnChain;
 
-        await Http.SendJsonAsync<WonkaBlazorWebApp.Shared.WBWAInvokeRecord>(System.Net.Http.HttpMethod.Post, "api/invoke", newInvokeRecord);
+        WonkaBlazorWebApp.Shared.WBWAInvokeRecord ResponseRecord =
+            await Http.SendJsonAsync<WonkaBlazorWebApp.Shared.WBWAInvokeRecord>(System.Net.Http.HttpMethod.Post, "api/invoke", newInvokeRecord);
+
+        if (!String.IsNullOrEmpty(ResponseRecord.ErrorMessage))
+        {
+            errorMessage = "ERROR!  " + ResponseRecord.ErrorMessage;
+        }
 
         await SetRequestDone();
     }

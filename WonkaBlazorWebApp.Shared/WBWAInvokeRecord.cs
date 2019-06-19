@@ -12,6 +12,12 @@ namespace WonkaBlazorWebApp.Shared
         {
             InvokeOnChain = false;
             RecordData    = new Dictionary<string, string>();
+            ErrorMessage  = null;
+        }
+
+        public void SetTrxGas(uint pnSendTrxGas)
+        {
+            RecordData["InvokeRuleTreeGasThreshold"] = Convert.ToString(pnSendTrxGas);
         }
 
         public void SetRuleTreeId(string psRuleTreeId)
@@ -20,5 +26,7 @@ namespace WonkaBlazorWebApp.Shared
         }
 
         public bool InvokeOnChain { get; set; }
+
+        public string ErrorMessage { get; set; }
     }
 }
