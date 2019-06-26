@@ -62,6 +62,7 @@ namespace WonkaBlazorWebApp.Client.Pages
   <if description=""Checking Input Values"">
        <criteria op=""AND"">
            <eval id=""pop2"">(N.NewSaleEAN) POPULATED</eval>
+           <eval id=""dtl1"">(N.StartSaleDate) IS AFTER (12/31/1976)</eval>
            <eval id=""asn2"">(N.NewSalesTransSeq) ASSIGN ('2')</eval>
        </criteria>
 
