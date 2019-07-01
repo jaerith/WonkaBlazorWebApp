@@ -34,6 +34,7 @@ namespace WonkaBlazorWebApp.Shared
         public WBWARuleTree()
         {
             GroveIndex = 0;
+            OwnerName  = null;
 
             MinGasCost = MaxGasCost = 0;
         }
@@ -43,6 +44,8 @@ namespace WonkaBlazorWebApp.Shared
         public string GroveId { get; set; }
 
         public int GroveIndex { get; set; }
+
+        public string OwnerName { get; set; }
 
         public string RuleTreeId { get; set; }
 

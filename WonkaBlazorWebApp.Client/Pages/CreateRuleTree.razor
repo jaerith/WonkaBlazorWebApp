@@ -36,6 +36,15 @@
     <br />
     <div class="row">
         <div class="col-sm-3">
+            <p>Owner Name</p>
+        </div>
+        <div class="col-sm-4">
+            <input placeholder="" bind="@OwnerName" />
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-3">
             <p>Serialize to Blockchain</p>
         </div>
         <div class="col-sm-4">
@@ -67,6 +76,7 @@
     string GroveId;
     string RuleTreeId;
     string MarkupUrl;
+    string OwnerName;
     bool   UseOrchMode;
     bool   SerializeToChain;
 
@@ -85,6 +95,7 @@
     {
         GroveId    = "NewSaleGroup";
         RuleTreeId = "VATCalculationExample";
+        OwnerName  = "";
         MarkupUrl  = WonkaBlazorWebApp.Shared.WBWAConstants.CONST_VAT_CALC_RULETREE_URL;
 
         UseOrchMode      = true;
@@ -112,6 +123,7 @@
         newRuleTree.GroveId           = GroveId;
         newRuleTree.RuleTreeId        = RuleTreeId;
         newRuleTree.RuleTreeOriginUrl = MarkupUrl;
+        newRuleTree.OwnerName         = OwnerName;
 
         newRuleTree.UsingOrchestrationMode = UseOrchMode;
         newRuleTree.SerializeToBlockchain  = SerializeToChain;
