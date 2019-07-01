@@ -129,6 +129,11 @@
 
         requestDone  = false;
         errorMessage = "";
+
+        if (!String.IsNullOrEmpty(WonkaBlazorWebApp.Client.Shared.SimpleCache.LastRuleTreeCreated))
+        {
+            RuleTreeId = WonkaBlazorWebApp.Client.Shared.SimpleCache.LastRuleTreeCreated;
+        }
     }
 
     private async Task SetFinalResult()
